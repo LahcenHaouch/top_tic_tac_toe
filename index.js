@@ -25,22 +25,12 @@ function Gameboard() {
       }
     }
   };
-  const printBoard = () => {
-    for (let i = 0; i < rowSize; i++) {
-      process.stdout.write("|");
-      for (let j = 0; j < columnSize; j++) {
-        process.stdout.write(`${board[i][j].token}|`);
-      }
-      console.log("");
-    }
-  };
 
   initBoard();
 
   return {
     getBoard,
     setToken,
-    printBoard,
   };
 }
 
@@ -64,13 +54,25 @@ function GameController() {
 
   return {
     getBoard,
-    printBoard: gameBoard.printBoard,
   };
 }
 
 function ScreenController() {
   const game = GameController();
-  game.printBoard();
+
+  const board = game.getBoard();
+
+  const printBoard = () => {
+    board.forEach(row => {
+      process.stdout.write("|");
+      row.forEach(column => {
+        process.stdout.write(`${column.token}|`);
+      })
+      console.log("");
+    })
+  };
+
+  printBoard();
 }
 
 const screen = ScreenController();
