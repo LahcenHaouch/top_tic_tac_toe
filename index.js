@@ -14,8 +14,8 @@ function Gameboard() {
   const board = [];
 
   const getBoard = () => board;
-  const setToken = (row, column, token) => {
-    board[row][column].setToken(token);
+  const setToken = (rowIndex, columnIndex, token) => {
+    board[rowIndex][columnIndex].setToken(token);
   };
   const initBoard = () => {
     for (let i = 0; i < rowSize; i++) {
@@ -48,12 +48,14 @@ function GameController() {
   ];
   const [activePlayer] = players;
 
-  const playRound = () => null;
+  const playRound = (rowIndex, columnIndex, token) => gameBoard.setToken(rowIndex, columnIndex, token);
   const getActivePlayer = () => activePlayer;
   const getBoard = () => gameBoard.getBoard();
 
   return {
     getBoard,
+    getActivePlayer,
+    playRound
   };
 }
 
