@@ -2,13 +2,13 @@ function Cell(token = null) {
   if (!new.target) {
     throw new Error("Cell must be called with new.");
   }
-  this.token = null;
+  this.token = token;
 }
 Cell.prototype.setToken = function (token) {
   this.token = token;
 };
 
-function Gameboard() {
+function BoardController() {
   const [rowSize, columnSize] = [3, 3];
 
   const board = [];
@@ -33,9 +33,25 @@ function Gameboard() {
     setToken,
   };
 }
+function ScreenController() {
+  const printBoard = (board) => {
+    board.forEach((row) => {
+      process.stdout.write("|");
+      row.forEach((column) => {
+        process.stdout.write(`${column.token}|`);
+      });
+      console.log("");
+    });
+  };
 
-function GameController() {
-  const gameBoard = Gameboard();
+  return {
+    printBoard,
+  };
+}
+
+(function GameController() {
+  const boardController = BoardController();
+  const screenController = ScreenController();
   const players = [
     {
       name: "player_1",
@@ -48,33 +64,14 @@ function GameController() {
   ];
   const [activePlayer] = players;
 
-  const playRound = (rowIndex, columnIndex, token) => gameBoard.setToken(rowIndex, columnIndex, token);
+  const playRound = (rowIndex, columnIndex, token) =>
+    boardController.setToken(rowIndex, columnIndex, token);
   const getActivePlayer = () => activePlayer;
-  const getBoard = () => gameBoard.getBoard();
 
-  return {
-    getBoard,
-    getActivePlayer,
-    playRound
-  };
-}
+  const display = () => screenController.printBoard(boardController.getBoard());
+  display();
 
-function ScreenController() {
-  const game = GameController();
-
-  const board = game.getBoard();
-
-  const printBoard = () => {
-    board.forEach(row => {
-      process.stdout.write("|");
-      row.forEach(column => {
-        process.stdout.write(`${column.token}|`);
-      })
-      console.log("");
-    })
-  };
-
-  printBoard();
-}
-
-const screen = ScreenController();
+  playRound(0, 0, "O");
+  playRound(1, 1, "X");
+  display();
+})();
