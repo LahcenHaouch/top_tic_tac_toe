@@ -9,9 +9,7 @@ body {
     justify-content: center;
     gap: 1rem;
 
-    
-
-    li {
+    button {
       border: 1px solid black;
       width: 250px;
       height: 250px;
