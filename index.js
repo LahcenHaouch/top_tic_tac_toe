@@ -16,12 +16,10 @@ function BoardController() {
   const getBoard = () => board;
   const setToken = (rowIndex, columnIndex, token) => {
     const cell = board[rowIndex][columnIndex];
-    console.log({ cell });
     if (cell.token !== null) {
       throw new Error(`[${rowIndex}][${columnIndex}]Cell is already set.`);
     }
     cell.setToken(token);
-    console.log({ board });
   };
   const initBoard = () => {
     for (let i = 0; i < rowSize; i++) {
@@ -71,6 +69,9 @@ function ScreenController() {
 (function GameController() {
   const boardController = BoardController();
   const screenController = ScreenController();
+
+  const board = boardController.getBoard();
+
   const winningCombinations = [
     [
       [0, 0],
@@ -114,15 +115,18 @@ function ScreenController() {
     ],
   ];
 
-  let gameState = "ongoing";
+  let gameState = {
+    status: "ongoing",
+    winner: null,
+  };
   const players = [
     {
       name: "player_1",
-      token: "O",
+      token: "X",
     },
     {
       name: "player_2",
-      token: "X",
+      token: "O",
     },
   ];
   const [activePlayer] = players;
@@ -137,17 +141,20 @@ function ScreenController() {
       throw error;
     }
   };
-  const isActivePlayerWinner = () => {
+  const isActivePlayerWinner = (rowIndex, columnIndex) => {
     for (let i = 0; i < winningCombinations.length; i++) {
       const combination = winningCombinations[i];
 
-      let winner = false;
+      let winner = true;
       for (let j = 0; j < combination.length; j++) {
-        if (combination[j] !== activePlayer.token) {
+
+        const [row, column] = combination[j];
+
+        if (board[row][column]?.token !== activePlayer.token) {
           winner = false;
           break;
         }
-        winner = true;
+        
       }
       if (winner) {
         return true;
@@ -171,8 +178,14 @@ function ScreenController() {
     }
 
     playRound(parseIndex(row), parseIndex(column), activePlayer.token);
-    if (boardController.isBoardFull() || isActivePlayerWinner()) {
-      gameState = "finished";
+    if (isActivePlayerWinner()) {
+      gameState.status = "finished";
+      gameState.winner = activePlayer;
+      return;
+    }
+
+    if (boardController.isBoardFull() && !isWinner) {
+      gameState = "draw";
     }
   });
 })();
