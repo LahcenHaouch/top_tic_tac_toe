@@ -9,9 +9,8 @@ Cell.prototype.setToken = function (token) {
 };
 
 function BoardController() {
-  const [rowSize, columnSize] = [3, 3];
-
   const board = [];
+  const [rowSize, columnSize] = [3, 3];
 
   const getBoard = () => board;
   const setToken = (rowIndex, columnIndex, token) => {
@@ -32,7 +31,7 @@ function BoardController() {
   const isBoardFull = () => {
     for (let i = 0; i < rowSize; i++) {
       for (let j = 0; j < columnSize; j++) {
-        if (board[i][j] === null) {
+        if (board[i][j].token === null) {
           return false;
         }
       }
@@ -48,7 +47,7 @@ function BoardController() {
     setToken,
   };
 }
-function ScreenController() {
+function DisplayController() {
   const boardEl = document.querySelector(".gameboard");
 
   const printBoard = (board) => {
@@ -59,16 +58,26 @@ function ScreenController() {
     });
   };
   const getBoardEl = () => boardEl;
+  const updateBoard = (rowIndex, columnIndex, token) => {
+    const el = document.querySelector(
+      `[data-row="${rowIndex}"][data-column="${columnIndex}"]`,
+    );
+    if (!el) {
+      return;
+    }
+    el.dataset.token = token;
+  };
 
   return {
     getBoardEl,
     printBoard,
+    updateBoard,
   };
 }
 
 (function GameController() {
   const boardController = BoardController();
-  const screenController = ScreenController();
+  const displayController = DisplayController();
 
   const board = boardController.getBoard();
 
@@ -115,7 +124,7 @@ function ScreenController() {
     ],
   ];
 
-  let gameState = {
+  const gameState = {
     status: "ongoing",
     winner: null,
   };
@@ -129,32 +138,30 @@ function ScreenController() {
       token: "O",
     },
   ];
-  const [activePlayer] = players;
+  let [activePlayer] = players;
 
   const parseIndex = (index) => Number.parseInt(index, 10);
   const playRound = (rowIndex, columnIndex, token) => {
     try {
       boardController.setToken(rowIndex, columnIndex, token);
-      screenController.updateBoard(rowIndex, columnIndex, token);
+      displayController.updateBoard(rowIndex, columnIndex, token);
     } catch (error) {
       console.error(error);
       throw error;
     }
   };
-  const isActivePlayerWinner = (rowIndex, columnIndex) => {
+  const isActivePlayerWinner = () => {
     for (let i = 0; i < winningCombinations.length; i++) {
       const combination = winningCombinations[i];
 
       let winner = true;
       for (let j = 0; j < combination.length; j++) {
-
         const [row, column] = combination[j];
 
         if (board[row][column]?.token !== activePlayer.token) {
           winner = false;
           break;
         }
-        
       }
       if (winner) {
         return true;
@@ -163,12 +170,15 @@ function ScreenController() {
     return false;
   };
 
-  screenController.printBoard(boardController.getBoard());
-
-  screenController.getBoardEl().addEventListener("click", (event) => {
+  displayController.printBoard(boardController.getBoard());
+  displayController.getBoardEl().addEventListener("click", (event) => {
+    console.log("status", gameState.status);
     const { target } = event;
 
-    if (!(target instanceof HTMLButtonElement) || gameState !== "ongoing") {
+    if (
+      !(target instanceof HTMLButtonElement) ||
+      gameState.status !== "ongoing"
+    ) {
       return;
     }
 
@@ -184,8 +194,11 @@ function ScreenController() {
       return;
     }
 
-    if (boardController.isBoardFull() && !isWinner) {
-      gameState = "draw";
+    if (boardController.isBoardFull()) {
+      gameState.status = "draw";
+      return;
     }
+
+    activePlayer = activePlayer === players[0] ? players[1] : players[0];
   });
 })();
