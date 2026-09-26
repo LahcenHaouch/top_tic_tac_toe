@@ -14,8 +14,15 @@ body {
       width: 250px;
       height: 250px;
 
-      &::before {
-        content: attr(data-token);
+      &[data-token="X"] {
+        &::before {
+          content: "X";
+        }
+      }
+      &[data-token="O"] {
+        &::before {
+          content: "O";
+        }
       }
     }
   }
