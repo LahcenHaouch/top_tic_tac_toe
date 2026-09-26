@@ -49,6 +49,7 @@ function BoardController() {
 }
 function DisplayController() {
   const boardEl = document.querySelector(".gameboard");
+  const gameStatusEl = document.querySelector(".game-status");
 
   const printBoard = (board) => {
     board.forEach((row, rowIndex) => {
@@ -67,11 +68,15 @@ function DisplayController() {
     }
     el.dataset.token = token;
   };
+  const displayGameStatus = (status) => {
+    gameStatusEl.textContent = status;
+  };
 
   return {
     getBoardEl,
     printBoard,
     updateBoard,
+    displayGameStatus,
   };
 }
 
@@ -131,10 +136,12 @@ function DisplayController() {
   const players = [
     {
       name: "player_1",
+      label: "Player One",
       token: "X",
     },
     {
       name: "player_2",
+      label: "Player Two",
       token: "O",
     },
   ];
@@ -171,6 +178,7 @@ function DisplayController() {
   };
 
   displayController.printBoard(boardController.getBoard());
+  displayController.displayGameStatus(`${activePlayer.label}'s turn`);
   displayController.getBoardEl().addEventListener("click", (event) => {
     console.log("status", gameState.status);
     const { target } = event;
@@ -191,14 +199,17 @@ function DisplayController() {
     if (isActivePlayerWinner()) {
       gameState.status = "finished";
       gameState.winner = activePlayer;
+      displayController.displayGameStatus(`${activePlayer.label} has won!`);
       return;
     }
 
     if (boardController.isBoardFull()) {
       gameState.status = "draw";
+      displayController.displayGameStatus("It's a draw!");
       return;
     }
 
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
+    displayController.displayGameStatus(`${activePlayer.label}'s turn`);
   });
 })();
