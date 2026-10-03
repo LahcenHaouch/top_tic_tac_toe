@@ -159,11 +159,11 @@ function DisplayController() {
   };
   const isActivePlayerWinner = () => {
     for (let i = 0; i < winningCombinations.length; i++) {
-      const combination = winningCombinations[i];
+      const combinations = winningCombinations[i];
 
       let winner = true;
-      for (let j = 0; j < combination.length; j++) {
-        const [row, column] = combination[j];
+      for (let j = 0; j < combinations.length; j++) {
+        const [row, column] = combinations[j];
 
         if (board[row][column]?.token !== activePlayer.token) {
           winner = false;
@@ -171,10 +171,10 @@ function DisplayController() {
         }
       }
       if (winner) {
-        return true;
+        return { winner: true, combinations };
       }
     }
-    return false;
+    return { winner: false };
   };
 
   displayController.printBoard(boardController.getBoard());
@@ -195,10 +195,19 @@ function DisplayController() {
     }
 
     playRound(parseIndex(row), parseIndex(column), activePlayer.token);
-    if (isActivePlayerWinner()) {
+    const { winner, combinations } = isActivePlayerWinner();
+    if (winner) {
       gameState.status = "finished";
       gameState.winner = activePlayer;
       displayController.displayGameStatus(`${activePlayer.label} has won!`);
+
+      combinations.forEach(([row, column]) => {
+        const element = document.querySelector(
+          `[data-row="${row}"][data-column="${column}"]`,
+        );
+        element.dataset.winner = "true";
+      });
+
       return;
     }
 

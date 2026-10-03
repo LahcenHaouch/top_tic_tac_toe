@@ -78,6 +78,14 @@ body {
         background-position: center;
         background-size: 60px;
       }
+
+      &[data-winner="true"] {
+        position: relative;
+        z-index: 10;
+        box-shadow:
+          inset 5px 5px 0 aqua,
+          5px 5px 0 aqua;
+      }
     }
   }
 }
