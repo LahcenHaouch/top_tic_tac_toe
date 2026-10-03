@@ -109,7 +109,7 @@ function DisplayController() {
     ],
     [
       [0, 1],
-      [2, 1],
+      [1, 1],
       [2, 1],
     ],
     [
@@ -180,7 +180,6 @@ function DisplayController() {
   displayController.printBoard(boardController.getBoard());
   displayController.displayGameStatus(`${activePlayer.label}'s turn`);
   displayController.getBoardEl().addEventListener("click", (event) => {
-    console.log("status", gameState.status);
     const { target } = event;
 
     if (

@@ -1,28 +1,76 @@
+:root {
+  --border-color: rgb(84, 84, 84);
+  --border-width: 2px;
+}
+
 body {
+  font-family: sans-serif;
+
+  max-width: 720px;
+  margin-inline: auto;
+
+  text-align: center;
+
+  h1 {
+    padding-top: 1rem;
+  }
+
+  h2 {
+    margin-bottom: 2rem;
+  }
+
   .gameboard {
     list-style: none;
     padding-left: 0;
 
     display: grid;
-    grid-template-columns: repeat(3, 250px);
-    grid-template-rows: repeat(3, 250px);
+    grid-template-columns: repeat(3, 150px);
+    grid-template-rows: repeat(3, 150px);
     justify-content: center;
-    gap: 1rem;
+
+    width: fit-content;
+    margin-inline: auto;
+
+    border: var(--border-width) solid var(--border-color);
 
     button {
-      border: 1px solid black;
-      width: 250px;
-      height: 250px;
+      border: none;
+      cursor: pointer;
+      width: 150px;
+      height: 150px;
+
+      &[data-row="0"][data-column="1"] {
+        border-right: var(--border-width) solid var(--border-color);
+        border-left: var(--border-width) solid var(--border-color);
+      }
+      &[data-row="1"][data-column="0"] {
+        border-top: var(--border-width) solid var(--border-color);
+        border-bottom: var(--border-width) solid var(--border-color);
+      }
+      &[data-row="1"][data-column="1"] {
+        border: var(--border-width) solid var(--border-color);
+      }
+      &[data-row="1"][data-column="2"] {
+        border-top: var(--border-width) solid var(--border-color);
+        border-bottom: var(--border-width) solid var(--border-color);
+      }
+      &[data-row="2"][data-column="1"] {
+        border-left: var(--border-width) solid var(--border-color);
+        border-right: var(--border-width) solid var(--border-color);
+      }
 
       &[data-token="X"] {
-        &::before {
-          content: "X";
-        }
+        background-image: url("./assets/cross.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 60px;
       }
       &[data-token="O"] {
-        &::before {
-          content: "O";
-        }
+        background-image: url("./assets/circle.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 60px;
+        /* background-color: red; */
       }
     }
   }
