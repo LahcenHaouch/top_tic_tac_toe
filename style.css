@@ -1,10 +1,12 @@
 :root {
+  --color: rgb(84, 84, 84);
   --border-color: rgb(84, 84, 84);
   --border-width: 2px;
 }
 
 body {
   font-family: sans-serif;
+  color: var(--color);
 
   max-width: 720px;
   margin-inline: auto;
@@ -39,6 +41,11 @@ body {
       width: 150px;
       height: 150px;
 
+      &:focus-visible {
+        outline: 1px solid var(--border-color);
+        outline-offset: -8px;
+      }
+
       &[data-row="0"][data-column="1"] {
         border-right: var(--border-width) solid var(--border-color);
         border-left: var(--border-width) solid var(--border-color);
@@ -70,7 +77,6 @@ body {
         background-repeat: no-repeat;
         background-position: center;
         background-size: 60px;
-        /* background-color: red; */
       }
     }
   }
