@@ -79,6 +79,17 @@ function DisplayController() {
   const displayGameStatus = (status) => {
     gameStatusEl.textContent = status;
   };
+  const displayActivePlayer = (player) => {
+    const previousActivePlayer = document.querySelector(`[data-active="true"]`);
+    if (previousActivePlayer) {
+      previousActivePlayer.dataset.active = "false";
+    }
+    const playerEl = document.getElementById(player.id);
+    if (!playerEl) {
+      return;
+    }
+    playerEl.dataset.active = "true";
+  };
 
   return {
     getBoardEl,
@@ -87,6 +98,7 @@ function DisplayController() {
     updateBoard,
     resetBoard,
     displayGameStatus,
+    displayActivePlayer,
   };
 }
 
@@ -145,12 +157,12 @@ function DisplayController() {
   };
   const players = [
     {
-      name: "player_1",
+      id: "player-one",
       label: "Player One",
       token: "X",
     },
     {
-      name: "player_2",
+      id: "player-two",
       label: "Player Two",
       token: "O",
     },
@@ -196,6 +208,7 @@ function DisplayController() {
     gameState.status = "ongoing";
     gameState.winner = null;
     displayController.displayGameStatus(`${activePlayer.label}'s turn`);
+    displayController.displayActivePlayer(activePlayer);
   });
   displayController.getBoardEl().addEventListener("click", (event) => {
     const { target } = event;
@@ -237,5 +250,6 @@ function DisplayController() {
 
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
     displayController.displayGameStatus(`${activePlayer.label}'s turn`);
+    displayController.displayActivePlayer(activePlayer);
   });
 })();

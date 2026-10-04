@@ -8,22 +8,53 @@ body {
   font-family: sans-serif;
   color: var(--color);
 
-  max-width: 720px;
+  max-width: 455px;
   margin-inline: auto;
 
   text-align: center;
 
   h1 {
     padding-top: 1rem;
+    margin-bottom: 2rem;
   }
 
   h2 {
     margin-bottom: 2rem;
+    border: 2px solid var(--border-color);
+    padding: 0.25rem 0.5rem;
+    width: fit-content;
+    margin-inline: auto;
+  }
+
+  .scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+
+    h3 {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    #player-one[data-active="true"] {
+      &::after {
+        content: url("./assets/joystick.svg");
+      }
+    }
+
+    #player-two[data-active="true"] {
+      &::before {
+        content: url("./assets/joystick.svg");
+      }
+    }
   }
 
   .gameboard {
     list-style: none;
     padding-left: 0;
+    margin-bottom: 1rem;
+    box-shadow: 5px 5px 0 var(--border-color);
 
     display: grid;
     grid-template-columns: repeat(3, 150px);
@@ -83,9 +114,13 @@ body {
         position: relative;
         z-index: 10;
         box-shadow:
-          inset 5px 5px 0 aqua,
-          5px 5px 0 aqua;
+          inset 5px 5px 0 var(--border-color),
+          5px 5px 0 var(--border-color);
       }
     }
+  }
+
+  #restart {
+    box-shadow: 5px 5px 0 var(--border-color);
   }
 }
