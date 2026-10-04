@@ -28,6 +28,7 @@ function BoardController() {
       }
     }
   };
+  const resetBoardState = initBoard;
   const isBoardFull = () => {
     for (let i = 0; i < rowSize; i++) {
       for (let j = 0; j < columnSize; j++) {
@@ -43,6 +44,7 @@ function BoardController() {
 
   return {
     getBoard,
+    resetBoardState,
     isBoardFull,
     setToken,
   };
@@ -50,6 +52,7 @@ function BoardController() {
 function DisplayController() {
   const boardEl = document.querySelector(".gameboard");
   const gameStatusEl = document.querySelector(".game-status");
+  const restartBtnEl = document.querySelector("#restart");
 
   const printBoard = (board) => {
     board.forEach((row, rowIndex) => {
@@ -58,7 +61,12 @@ function DisplayController() {
       });
     });
   };
+  const resetBoard = (board) => {
+    boardEl.innerHTML = "";
+    printBoard(board);
+  };
   const getBoardEl = () => boardEl;
+  const getRestartBtnEl = () => restartBtnEl;
   const updateBoard = (rowIndex, columnIndex, token) => {
     const el = document.querySelector(
       `[data-row="${rowIndex}"][data-column="${columnIndex}"]`,
@@ -74,8 +82,10 @@ function DisplayController() {
 
   return {
     getBoardEl,
+    getRestartBtnEl,
     printBoard,
     updateBoard,
+    resetBoard,
     displayGameStatus,
   };
 }
@@ -179,6 +189,14 @@ function DisplayController() {
 
   displayController.printBoard(boardController.getBoard());
   displayController.displayGameStatus(`${activePlayer.label}'s turn`);
+  displayController.getRestartBtnEl().addEventListener("click", (event) => {
+    boardController.resetBoardState();
+    displayController.resetBoard(boardController.getBoard());
+    activePlayer = players[0];
+    gameState.status = "ongoing";
+    gameState.winner = null;
+    displayController.displayGameStatus(`${activePlayer.label}'s turn`);
+  });
   displayController.getBoardEl().addEventListener("click", (event) => {
     const { target } = event;
 

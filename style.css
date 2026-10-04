@@ -42,7 +42,7 @@ body {
       height: 150px;
 
       &:focus-visible {
-        outline: 1px solid var(--border-color);
+        outline: var(--border-width) solid var(--border-color);
         outline-offset: -8px;
       }
 
