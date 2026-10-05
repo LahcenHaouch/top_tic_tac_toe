@@ -39,19 +39,35 @@ body {
 
     #player-one[data-active="true"] {
       position: relative;
-      &::after {
+      &::before {
         position: absolute;
         right: -1.5rem;
         content: url("./assets/joystick.svg");
       }
     }
-
     #player-two[data-active="true"] {
       position: relative;
       &::before {
         position: absolute;
         left: -1.5rem;
         content: url("./assets/joystick.svg");
+      }
+    }
+
+    #player-one[data-winner="true"] {
+      position: relative;
+      &::before {
+        position: absolute;
+        right: -1.5rem;
+        content: url("./assets/crown.svg");
+      }
+    }
+    #player-two[data-winner="true"] {
+      position: relative;
+      &::before {
+        position: absolute;
+        left: -1.5rem;
+        content: url("./assets/crown.svg");
       }
     }
   }

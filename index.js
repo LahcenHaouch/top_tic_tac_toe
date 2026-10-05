@@ -63,6 +63,10 @@ function DisplayController() {
   };
   const resetBoard = (board) => {
     boardEl.innerHTML = "";
+    const winner = document.querySelector(`[data-winner="true"]`);
+    if (winner) {
+      winner.dataset.winner = "false";
+    }
     printBoard(board);
   };
   const getBoardEl = () => boardEl;
@@ -90,6 +94,13 @@ function DisplayController() {
     }
     playerEl.dataset.active = "true";
   };
+  const displayWinnerCrown = (player) => {
+    const playerEl = document.getElementById(player.id);
+    if (!playerEl) {
+      return;
+    }
+    playerEl.dataset.winner = "true";
+  };
 
   return {
     getBoardEl,
@@ -99,6 +110,7 @@ function DisplayController() {
     resetBoard,
     displayGameStatus,
     displayActivePlayer,
+    displayWinnerCrown,
   };
 }
 
@@ -201,6 +213,7 @@ function DisplayController() {
 
   displayController.printBoard(boardController.getBoard());
   displayController.displayGameStatus(`${activePlayer.label}'s turn`);
+  displayController.displayActivePlayer(activePlayer);
   displayController.getRestartBtnEl().addEventListener("click", () => {
     boardController.resetBoardState();
     displayController.resetBoard(boardController.getBoard());
@@ -231,6 +244,7 @@ function DisplayController() {
       gameState.status = "finished";
       gameState.winner = activePlayer;
       displayController.displayGameStatus(`${activePlayer.label} has won!`);
+      displayController.displayWinnerCrown(activePlayer);
 
       combinations.forEach(([row, column]) => {
         const element = document.querySelector(
