@@ -201,7 +201,7 @@ function DisplayController() {
 
   displayController.printBoard(boardController.getBoard());
   displayController.displayGameStatus(`${activePlayer.label}'s turn`);
-  displayController.getRestartBtnEl().addEventListener("click", (event) => {
+  displayController.getRestartBtnEl().addEventListener("click", () => {
     boardController.resetBoardState();
     displayController.resetBoard(boardController.getBoard());
     activePlayer = players[0];
