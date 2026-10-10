@@ -53,6 +53,8 @@ function DisplayController() {
   const boardEl = document.querySelector(".gameboard");
   const gameStatusEl = document.querySelector(".game-status");
   const restartBtnEl = document.querySelector("#restart");
+  const playerOneLabelEl = document.querySelector("#player-one input");
+  const playerTwoLabelEL = document.querySelector("#player-two input");
 
   const printBoard = (board) => {
     board.forEach((row, rowIndex) => {
@@ -70,6 +72,8 @@ function DisplayController() {
     printBoard(board);
   };
   const getBoardEl = () => boardEl;
+  const getPlayerOneLabelEl = () => playerOneLabelEl;
+  const getPlayerTwoLabelEl = () => playerTwoLabelEL;
   const getRestartBtnEl = () => restartBtnEl;
   const updateBoard = (rowIndex, columnIndex, token) => {
     const el = document.querySelector(
@@ -80,9 +84,19 @@ function DisplayController() {
     }
     el.dataset.token = token;
   };
-  const displayGameStatus = (status) => {
-    gameStatusEl.textContent = status;
+  const displayGameStatus = (activePlayerLabel, gameStatus) => {
+    if (gameStatus === "finished") {
+      gameStatusEl.textContent = `${activePlayerLabel} has won!`;
+      return;
+    }
+    if (gameStatus === "draw") {
+      gameStatusEl.textContent = "It's a draw!";
+      return;
+    }
+
+    gameStatusEl.textContent = `${activePlayerLabel}'s turn`;
   };
+
   const displayActivePlayer = (player) => {
     const previousActivePlayer = document.querySelector(`[data-active="true"]`);
     if (previousActivePlayer) {
@@ -105,6 +119,8 @@ function DisplayController() {
   return {
     getBoardEl,
     getRestartBtnEl,
+    getPlayerOneLabelEl,
+    getPlayerTwoLabelEl,
     printBoard,
     updateBoard,
     resetBoard,
@@ -163,6 +179,8 @@ function DisplayController() {
     ],
   ];
 
+  const initialPlayerOneLabel = "Player One";
+  const initialPlayerTwoLabel = "Player Two";
   const gameState = {
     status: "ongoing",
     winner: null,
@@ -170,16 +188,19 @@ function DisplayController() {
   const players = [
     {
       id: "player-one",
-      label: "Player One",
+      label: initialPlayerOneLabel,
       token: "X",
     },
     {
       id: "player-two",
-      label: "Player Two",
+      label: initialPlayerTwoLabel,
       token: "O",
     },
   ];
   let [activePlayer] = players;
+
+  displayController.getPlayerOneLabelEl().value = players[0].label;
+  displayController.getPlayerTwoLabelEl().value = players[1].label;
 
   const parseIndex = (index) => Number.parseInt(index, 10);
   const playRound = (rowIndex, columnIndex, token) => {
@@ -212,7 +233,7 @@ function DisplayController() {
   };
 
   displayController.printBoard(boardController.getBoard());
-  displayController.displayGameStatus(`${activePlayer.label}'s turn`);
+  displayController.displayGameStatus(activePlayer.label, gameState.status);
   displayController.displayActivePlayer(activePlayer);
   displayController.getRestartBtnEl().addEventListener("click", () => {
     boardController.resetBoardState();
@@ -220,8 +241,16 @@ function DisplayController() {
     activePlayer = players[0];
     gameState.status = "ongoing";
     gameState.winner = null;
-    displayController.displayGameStatus(`${activePlayer.label}'s turn`);
+    displayController.displayGameStatus(activePlayer.label, gameState.status);
     displayController.displayActivePlayer(activePlayer);
+  });
+  displayController.getPlayerOneLabelEl().addEventListener("input", (event) => {
+    players[0].label = event.target.value;
+    displayController.displayGameStatus(activePlayer.label, gameState.status);
+  });
+  displayController.getPlayerTwoLabelEl().addEventListener("input", (event) => {
+    players[1].label = event.target.value;
+    displayController.displayGameStatus(activePlayer.label, gameState.status);
   });
   displayController.getBoardEl().addEventListener("click", (event) => {
     const { target } = event;
@@ -243,7 +272,11 @@ function DisplayController() {
     if (winner) {
       gameState.status = "finished";
       gameState.winner = activePlayer;
-      displayController.displayGameStatus(`${activePlayer.label} has won!`);
+      displayController.displayGameStatus(
+        activePlayer.label,
+        gameState.status,
+        winner,
+      );
       displayController.displayWinnerCrown(activePlayer);
 
       combinations.forEach(([row, column]) => {
@@ -258,12 +291,12 @@ function DisplayController() {
 
     if (boardController.isBoardFull()) {
       gameState.status = "draw";
-      displayController.displayGameStatus("It's a draw!");
+      displayController.displayGameStatus(activePlayer.label, gameState.status);
       return;
     }
 
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
-    displayController.displayGameStatus(`${activePlayer.label}'s turn`);
+    displayController.displayGameStatus(activePlayer.label, gameState.status);
     displayController.displayActivePlayer(activePlayer);
   });
 })();

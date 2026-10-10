@@ -32,9 +32,24 @@ body {
     align-items: center;
     margin-bottom: 0.75rem;
 
-    h3 {
-      display: flex;
-      gap: 0.25rem;
+    input {
+      width: 125px;
+      border-radius: 0;
+      border: var(--border-width) solid var(--border-color);
+      padding-inline: 0.5rem;
+    }
+
+    [data-active="true"],
+    [data-winner="true"] {
+      &::before {
+        top: 5%;
+      }
+    }
+
+    #player-two {
+      input {
+        text-align: right;
+      }
     }
 
     #player-one[data-active="true"] {
@@ -143,6 +158,7 @@ body {
   }
 
   #restart {
+    border-radius: 0;
     box-shadow: 5px 5px 0 var(--border-color);
   }
 }
